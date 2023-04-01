@@ -1,3 +1,16 @@
+'''
+
+TorchSpectralGate is a PyTorch-based implementation of Spectral Gating, an algorithm for denoising audio signals.
+
+The algorithm was originally proposed by Sainburg et al [1] and was previously implemented in a GitHub repository [2].
+
+[1] Sainburg, Tim, and Timothy Q. Gentner. “Toward a Computational Neuroethology of Vocal Communication:
+From Bioacoustics to Neurophysiology, Emerging Tools and Future Directions.”
+
+[2] Sainburg, T. (2019). noise-reduction. GitHub. Retrieved from https://github.com/timsainb/noisereduce.
+
+'''
+
 import torch
 from torch.nn.functional import conv1d, conv2d
 from torch.types import Number
