@@ -30,6 +30,9 @@ def load_audio_files(path: str):
 
 
 if __name__ == '__main__':
+
+
+
     files, x, fs = load_audio_files('data')
 
     # Initialize the SpectralGate module and apply it to the input data
