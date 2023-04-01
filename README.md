@@ -19,6 +19,9 @@ Sainburg, T. (2019). noise-reduction. GitHub. Retrieved from https://github.com/
 ## Installation
 Not available yet.
 
+## Enviroment
+Not available yet.
+
 ## Usage
 ```
 import torch
@@ -26,6 +29,7 @@ import torch_gating as tg
 
 # Create TorchSpectralGate instance
 tg = tg.TorchSpectralGate(
+    sr=8000,
     n_fft=2048,
     hop_length=512,
     win_length=2048,
@@ -40,7 +44,7 @@ tg = tg.TorchSpectralGate(
 )
 
 # Apply Spectral Gate to noisy speech signal
-noisy_speech = torch.randn(3, 16000)
+noisy_speech = torch.randn(3, 32000)
 enhanced_speech = tg(noisy_speech)
 ```
 
