@@ -67,7 +67,7 @@ enhanced_speech = tg(noisy_speech)
 A comparison of run time was conducted using the timeit module on a system equipped with an NVIDIA GeForce RTX 3070 GPU. 
 The purpose of the comparison was to evaluate the computational efficiency of the TorchSpectralGate implementation of the Spectral Gating algorithm compared to the original implementation.
 
-###Stationary
+**Stationary**
 | Number of Inputs|Input Size|TorchGating Time sec|NoiseReduce Time sec|
 | --- | --- | --- | --- |
 |1|64,000|0.019|0.84|
@@ -75,7 +75,7 @@ The purpose of the comparison was to evaluate the computational efficiency of th
 |8|64,000|0.059|5.85|
 |8|256,000|0.19|17.11|
 
-###Non-Stationary
+**Non-Stationary**
 | Number of Inputs|Input Size|TorchGating Time sec|NoiseReduce Time sec|
 | --- | --- | --- | --- |
 |1|64,000|0.022|0.85|
