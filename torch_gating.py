@@ -1,6 +1,6 @@
 '''
 
-TorchSpectralGate is a PyTorch-based implementation of Spectral Gating, an algorithm for denoising audio signals.
+TorchGating is a PyTorch-based implementation of Spectral Gating, an algorithm for denoising audio signals.
 
 The algorithm was originally proposed by Sainburg et al [1] and was previously implemented in a GitHub repository [2].
 
@@ -78,7 +78,7 @@ def _linspace(start: Number, stop: Number, num: int = 50, endpoint: bool = True,
         return torch.linspace(start, stop, num + 1, **kwargs)[:-1]
 
 
-class TorchSpectralGate(torch.nn.Module):
+class TorchGating(torch.nn.Module):
     """
     A PyTorch module that applies a spectral gate to an input signal using the STFT.
 
@@ -232,6 +232,14 @@ class TorchSpectralGate(torch.nn.Module):
         Returns:
             torch.Tensor: The denoised audio signal, with the same shape as the input signal.
         """
+        assert x.ndim == 2
+        if x.shape[-1] < self.win_length * 2:
+            raise Exception(f'x must be bigger than {self.win_length * 2}')
+
+        assert xn is None or xn.ndim == 1 or xn.ndim == 2
+        if xn is not None and xn.shape[-1] < self.win_length * 2:
+            raise Exception(f'xn must be bigger than {self.win_length * 2}')
+
         # Compute short-time Fourier transform (STFT)
         X = torch.stft(
             x,
@@ -247,7 +255,6 @@ class TorchSpectralGate(torch.nn.Module):
         if self.nonstationary:
             sig_mask = self.nonstationary_mask(X.abs())
         else:
-            assert xn is None or xn.shape[0] == x.shape[0]
             sig_mask = self.stationary_mask(_amp_to_db(X), xn)
 
         # Propagate decrease in signal power

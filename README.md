@@ -25,10 +25,11 @@ Not available yet.
 ## Usage
 ```
 import torch
-import torch_gating as tg
+from torch_gating import TorchGating as TG
+device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
 
-# Create TorchSpectralGate instance
-tg = tg.TorchSpectralGate(
+# Create TorchGating instance
+tg = TG(
     sr=8000,
     n_fft=2048,
     hop_length=512,
@@ -41,10 +42,10 @@ tg = tg.TorchSpectralGate(
     n_mult_nonstationary=4,
     temp_coeff_nonstationary=0.3,
     prop_decrease=0.8,
-)
+).to(device)
 
 # Apply Spectral Gate to noisy speech signal
-noisy_speech = torch.randn(3, 32000)
+noisy_speech = torch.randn(3, 32000).to(device)
 enhanced_speech = tg(noisy_speech)
 ```
 
@@ -63,11 +64,34 @@ enhanced_speech = tg(noisy_speech)
 *   prop_decrease: The proportion of decrease to apply to the mask.
 
 ## Run Time Comparison
-Not available yet.
+A comparison of run time was conducted using the timeit module on a system equipped with an NVIDIA GeForce RTX 3070 GPU. 
+The purpose of the comparison was to evaluate the computational efficiency of the TorchSpectralGate implementation of the Spectral Gating algorithm compared to the original implementation.
+
+###Stationary
+| Number of Inputs|Input Size|TorchGating Time sec|NoiseReduce Time sec|
+| --- | --- | --- | --- |
+|1|64,000|0.019|0.84|
+|1|256,000|0.031|2.60|
+|8|64,000|0.059|5.85|
+|8|256,000|0.19|17.11|
+###Non-Stationary
+| Number of Inputs|Input Size|TorchGating Time sec|NoiseReduce Time sec|
+| --- | --- | --- | --- |
+|1|64,000|0.022|0.85|
+|1|256,000|0.036|2.28|
+|8|64,000|0.065|7.27|
+|8|256,000|0.22|18.95|
 
 ## Example Results
-For the evaluation, a speech utterance was taken from the [NOIZEUS database](https://ecs.utdallas.edu/loizou/speech/noizeus/), a repository of noisy speech corpus. The sentence 'sp09.wav' was degraded with car noise. 
+For the evaluation, a speech utterance was taken from the
+[NOIZEUS database](https://ecs.utdallas.edu/loizou/speech/noizeus/) [3], a repository of noisy speech corpus. .
+
+The sentence 'sp09.wav' was degraded with car noise. 
 This was done through the addition of interfering signals at signal-to-noise ratios ranging from 0 to 15 dB, using method B of the ITU-T P.56.
+
+<a id="3">[3]</a> 
+Hu, Y. and Loizou, P. (2007). “Subjective evaluation and comparison of speech enhancement algorithms,” Speech Communication, 49, 588-601.
+
 
 ![Stationary Spectral Gating](graphs/sp09_car_sn5_stationary.png)
 
