@@ -64,7 +64,7 @@ enhanced_speech = tg(noisy_speech)
 *   prop_decrease: The proportion of decrease to apply to the mask.
 
 ## Run Time Comparison
-A comparison of run time was conducted using the timeit module on a system equipped with an NVIDIA GeForce RTX 3070 GPU. 
+A comparison of run time was conducted using the timeit module (@number=30) on a system equipped with an NVIDIA GeForce RTX 3070 GPU. 
 The purpose of the comparison was to evaluate the computational efficiency of the TorchSpectralGate implementation of the Spectral Gating algorithm compared to the original implementation.
 
 **Stationary**
