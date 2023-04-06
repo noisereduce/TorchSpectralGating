@@ -10,7 +10,7 @@ TorchSpectralGate supports both stationary and non-stationary noise reduction. T
 Sainburg, Tim, and Timothy Q. Gentner. “Toward a Computational Neuroethology of Vocal Communication: From Bioacoustics to Neurophysiology, Emerging Tools and Future Directions.” Frontiers in Behavioral Neuroscience, vol. 15, 2021. Frontiers, https://www.frontiersin.org/articles/10.3389/fnbeh.2021.811737.
 
 <a id="2">[2]</a> 
-Sainburg, T. (2019). noise-reduction. GitHub. Retrieved from https://github.com/timsainb/noisereduce
+Sainburg, T. (2019). noise-reduction. GitHub. Retrieved from https://github.com/timsainb/noisereduce.
 
 ***
 
@@ -19,8 +19,14 @@ Sainburg, T. (2019). noise-reduction. GitHub. Retrieved from https://github.com/
 ## Installation
 Not available yet.
 
-## Enviroment
-Not available yet.
+## Environment
+Python 3.x
+```
+matplotlib==3.7.1
+numpy==1.24.2
+soundfile==0.11.0
+torch==2.0.0.dev20221210+cu117
+```
 
 ## Usage
 ```
@@ -45,7 +51,7 @@ tg = TG(
 ).to(device)
 
 # Apply Spectral Gate to noisy speech signal
-noisy_speech = torch.randn(3, 32000).to(device)
+noisy_speech = torch.randn(3, 32000, device=device)
 enhanced_speech = tg(noisy_speech)
 ```
 
@@ -85,7 +91,7 @@ The purpose of the comparison was to evaluate the computational efficiency of th
 
 ## Example Results
 For the evaluation, a speech utterance was taken from the
-[NOIZEUS database](https://ecs.utdallas.edu/loizou/speech/noizeus/) [3], a repository of noisy speech corpus. .
+[NOIZEUS database](https://ecs.utdallas.edu/loizou/speech/noizeus/) [3], a repository of noisy speech corpus.
 
 The sentence 'sp09.wav' was degraded with car noise. 
 This was done through the addition of interfering signals at signal-to-noise ratios ranging from 0 to 15 dB, using method B of the ITU-T P.56.

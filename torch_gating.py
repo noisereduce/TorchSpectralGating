@@ -36,19 +36,19 @@ def _amp_to_db(X: torch.Tensor, eps=torch.finfo(torch.float32).eps) -> torch.Ten
 
 
 @torch.no_grad()
-def _temperature_sigmoid(x: torch.Tensor, x0: float, T: float) -> torch.Tensor:
+def _temperature_sigmoid(x: torch.Tensor, x0: float, temp_coeff: float) -> torch.Tensor:
     """
     Apply a sigmoid function with temperature scaling.
 
     Arguments:
         x {[torch.Tensor]} -- [Input tensor.]
         x0 {[float]} -- [Parameter that controls the threshold of the sigmoid.]
-        T {[float]} -- [Parameter that controls the slope of the sigmoid.]
+        temp_coeff {[float]} -- [Parameter that controls the slope of the sigmoid.]
 
     Returns:
         [torch.Tensor] -- [Output tensor after applying the sigmoid with temperature scaling.]
     """
-    return torch.sigmoid((x - x0) / T)
+    return torch.sigmoid((x - x0) / temp_coeff)
 
 
 @torch.no_grad()
@@ -167,7 +167,7 @@ class TorchGating(torch.nn.Module):
         return torch.outer(_v_f, _v_t).unsqueeze(0).unsqueeze(0)
 
     @torch.no_grad()
-    def stationary_mask(self, X_db: torch.Tensor, xn: Optional[torch.Tensor] = None) -> torch.Tensor:
+    def _stationary_mask(self, X_db: torch.Tensor, xn: Optional[torch.Tensor] = None) -> torch.Tensor:
         """
         Computes a stationary binary mask to filter out noise in a log-magnitude spectrogram.
 
@@ -198,7 +198,7 @@ class TorchGating(torch.nn.Module):
         return sig_mask
 
     @torch.no_grad()
-    def nonstationary_mask(self, X_abs: torch.Tensor) -> torch.Tensor:
+    def _nonstationary_mask(self, X_abs: torch.Tensor) -> torch.Tensor:
         """
         Computes a non-stationary binary mask to filter out noise in a log-magnitude spectrogram.
 
@@ -253,9 +253,9 @@ class TorchGating(torch.nn.Module):
 
         # Compute signal mask based on stationary or nonstationary assumptions
         if self.nonstationary:
-            sig_mask = self.nonstationary_mask(X.abs())
+            sig_mask = self._nonstationary_mask(X.abs())
         else:
-            sig_mask = self.stationary_mask(_amp_to_db(X), xn)
+            sig_mask = self._stationary_mask(_amp_to_db(X), xn)
 
         # Propagate decrease in signal power
         sig_mask = self.prop_decrease * (sig_mask * 1.0 - 1.0) + 1.0
