@@ -4,23 +4,13 @@ TorchSpectralGate is a PyTorch-based implementation of Spectral Gating, an algor
 
 The algorithm was originally proposed by Sainburg et al [1] and was previously implemented in a GitHub repository [2]. The current implementation was developed in PyTorch to improve computational efficiency and reduce run time.
 
+
 <a id="1">[1]</a> 
 Sainburg, Tim, and Timothy Q. Gentner. “Toward a Computational Neuroethology of Vocal Communication: From Bioacoustics to Neurophysiology, Emerging Tools and Future Directions.” Frontiers in Behavioral Neuroscience, vol. 15, 2021. Frontiers, https://www.frontiersin.org/articles/10.3389/fnbeh.2021.811737.
 
 <a id="2">[2]</a> 
 Sainburg, T. (2019). noise-reduction. GitHub. Retrieved from https://github.com/timsainb/noisereduce.
-
 ***
-
-## Implementation Scheme
-TorchSpectralGate supports both stationary and non-stationary noise reduction. To enable parallel computation, a few modifications were made to the original algorithm. In the non-stationary spectral gating, an FIR filter was implemented instead of an IIR filter.
-
-### Spectral Gating
-![Spectral Gating](graphs/SpectralGatingScheme.png)
-### Stationary Mask Estimation
-![Stationary Mask](graphs/StationaryMaskScheme.png)
-### Non-Stationary Mask Estimation
-![Non-Stationary Mask](graphs/NonStationaryMaskScheme.png)
 
 ## Installation
 Not available yet.
@@ -33,6 +23,22 @@ numpy==1.24.2
 soundfile==0.11.0
 torch==2.0.0.dev20221210+cu117
 ```
+***
+
+
+## Implementation Scheme
+TorchSpectralGate supports both stationary and non-stationary noise reduction. To enable parallel computation, a few modifications were made to the original algorithm. In the non-stationary spectral gating, an FIR filter was implemented instead of an IIR filter.
+
+### Spectral Gating
+TF-Mask can be estimated using stationary and non-stationary methods.
+![Spectral Gating](graphs/SpectralGatingScheme.png)
+### Stationary Mask Estimation
+Staitonary TF-Mask estimation.
+![Stationary Mask](graphs/StationaryMaskScheme.png)
+### Non-Stationary Mask Estimation
+Non-staitonary TF-Mask estimation.
+![Non-Stationary Mask](graphs/NonStationaryMaskScheme.png)
+***
 
 ## TorchGating Class
 Class for performing parallel spectral gating.
@@ -64,6 +70,8 @@ enhanced_speech = tg(noisy_speech)
 *   n_thresh_nonstationary: The multiplier to apply to the sigmoid function in the non-stationary noise mask.
 *   temp_coeff_nonstationary: The temperature coefficient to apply to the sigmoid function in the non-stationary noise mask.
 *   prop_decrease: The proportion of decrease to apply to the mask.
+***
+
 
 ## Command-Line Interface
 The "run.py" script provides a command-line interface for applying the SpectralGate algorithm to audio files. The program will apply the SpectralGate algorithm to all audio files in the input directory, or to the single audio file specified by input_path, and save the processed files in the output directory. If the --graphs option is enabled, the program will also display input and output spectrograms as plots.
@@ -88,6 +96,7 @@ The script takes the following arguments:
 * --vmin: Minimum value for the color scale in dB (default: -80).
 * --vmax: Maximum value for the color scale in dB (default: None).
 * --cmap: Name of the colormap to use for the spectrogram plots (default: 'magma').
+***
 
 
 ## Run Time Comparison
@@ -109,6 +118,8 @@ The purpose of the comparison was to evaluate the computational efficiency of th
 |1|256,000|0.036|2.28|
 |8|64,000|0.065|7.27|
 |8|256,000|0.22|18.95|
+***
+
 
 ## Example Results
 For the evaluation, a speech utterance was taken from the
