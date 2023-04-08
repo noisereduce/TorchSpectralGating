@@ -116,9 +116,9 @@ def plot_waveform_specgram(x: np.ndarray, y: np.ndarray, fs: int, title: str,
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Audio processing script.")
-    parser.add_argument('input', type=str,
+    parser.add_argument('input_path', type=str,
                         help='Path to the directory containing audio files or to an audio file.')
-    parser.add_argument('--output', type=str, default='output',
+    parser.add_argument('--output_path', type=str, default='output',
                         help='Path to the directory to save the processed audio files. (default: output)')
     parser.add_argument('--nonstationary', action='store_true',
                         help='Whether to use non-stationary or stationary masking. (default: stationary)')
@@ -141,8 +141,7 @@ def parse_args() -> argparse.Namespace:
                         help='Maximum value for the color scale of the spectrograms. (default: None)')
     parser.add_argument('--cmap', type=str, default='magma',
                         help='Name of the colormap to use for the spectrograms. (default: magma)')
-    parser.add_argument('--device', type=str, default='output',
-                        help='Output device for the audio files. (default: output)')
+
     return parser.parse_args()
 
 
@@ -155,7 +154,7 @@ def main():
     assert not opt.cpu or torch.cuda.is_available()
 
     # Load audio files
-    files, x, fs = load_audio_files(opt.input, opt.verbose)
+    files, x, fs = load_audio_files(opt.input_path, opt.verbose)
     if opt.norm:
         x /= np.expand_dims(np.abs(x).max(axis=1), 1)
 
@@ -167,7 +166,7 @@ def main():
         y /= np.expand_dims(np.abs(y).max(axis=1), 1)
 
     subdirs = fr"{'non-stationary' if opt.nonstationary else 'stationary'}" if opt.subdirs else None
-    output_dir = check_dir(opt.output, subdirs, opt.verbose)
+    output_dir = check_dir(opt.output_path, subdirs, opt.verbose)
 
     for i, filename in enumerate(files):
         # Save processed audio

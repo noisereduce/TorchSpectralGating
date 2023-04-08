@@ -44,9 +44,7 @@ from torch_gating import TorchGating as TG
 device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
 
 # Create TorchGating instance
-tg = TG(
-    sr=8000,
-).to(device)
+tg = TG(sr=8000, nonstationary=True).to(device)
 
 # Apply Spectral Gate to noisy speech signal
 noisy_speech = torch.randn(3, 32000, device=device)
@@ -79,7 +77,7 @@ python run.py input_path --output output_path --nonstationary --verbose --norm -
 ### Parameters
 The script takes the following arguments:
 * input_path: Path to the directory containing audio files or to an audio file.
-* --output: Path to the directory to save the output files (default: 'output').
+* --output_path: Path to the directory to save the output files (default: 'output').
 * --nonstationary: Whether to use non-stationary or stationary masking (default: False).
 * --verbose: Flag indicating whether verbose mode is enabled (default: False).
 * --norm: Whether to normalize the signals (default: False).
@@ -90,7 +88,7 @@ The script takes the following arguments:
 * --vmin: Minimum value for the color scale in dB (default: -80).
 * --vmax: Maximum value for the color scale in dB (default: None).
 * --cmap: Name of the colormap to use for the spectrogram plots (default: 'magma').
-* --device: Device to run the algorithm on ('cpu' or 'cuda', default: 'cuda' if available).
+
 
 ## Run Time Comparison
 A comparison of run time was conducted using the timeit module (@number=30) on a system equipped with an NVIDIA GeForce RTX 3070 GPU. 
