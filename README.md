@@ -46,17 +46,6 @@ device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cp
 # Create TorchGating instance
 tg = TG(
     sr=8000,
-    n_fft=2048,
-    hop_length=512,
-    win_length=2048,
-    freq_mask_smooth_hz=100,
-    time_mask_smooth_ms=100,
-    n_std_thresh_stationary=2,
-    nonstationary=True,
-    n_movemean_nonstationary=8,
-    n_mult_nonstationary=4,
-    temp_coeff_nonstationary=0.3,
-    prop_decrease=0.8,
 ).to(device)
 
 # Apply Spectral Gate to noisy speech signal
@@ -84,7 +73,7 @@ The "run.py" script provides a command-line interface for applying the SpectralG
 ### Usage
 Here is an example of how to use the script:
 ```
-python spectralgate.py input_path --output output_path --nonstationary --verbose --norm --graphs --subdirs --figsize 10 6 --vmin -80 --vmax None --cmap magma --device cuda
+python run.py input_path --output output_path --nonstationary --verbose --norm --graphs --subdirs
 ```
 
 ### Parameters
