@@ -4,8 +4,6 @@ TorchSpectralGate is a PyTorch-based implementation of Spectral Gating, an algor
 
 The algorithm was originally proposed by Sainburg et al [1] and was previously implemented in a GitHub repository [2]. The current implementation was developed in PyTorch to improve computational efficiency and reduce run time.
 
-TorchSpectralGate supports both stationary and non-stationary noise reduction. To enable parallel computation, a few modifications were made to the original algorithm. In the non-stationary spectral gating, an FIR filter was implemented instead of an IIR filter.
-
 <a id="1">[1]</a> 
 Sainburg, Tim, and Timothy Q. Gentner. “Toward a Computational Neuroethology of Vocal Communication: From Bioacoustics to Neurophysiology, Emerging Tools and Future Directions.” Frontiers in Behavioral Neuroscience, vol. 15, 2021. Frontiers, https://www.frontiersin.org/articles/10.3389/fnbeh.2021.811737.
 
@@ -14,7 +12,9 @@ Sainburg, T. (2019). noise-reduction. GitHub. Retrieved from https://github.com/
 
 ***
 
-## Algorithm Scheme
+## Implementation Scheme
+TorchSpectralGate supports both stationary and non-stationary noise reduction. To enable parallel computation, a few modifications were made to the original algorithm. In the non-stationary spectral gating, an FIR filter was implemented instead of an IIR filter.
+
 ### Spectral Gating
 ![Spectral Gating](graphs/SpectralGatingScheme.png)
 ### Stationary Mask Estimation
@@ -34,7 +34,10 @@ soundfile==0.11.0
 torch==2.0.0.dev20221210+cu117
 ```
 
-## Usage
+## TorchGating Class
+Class for performing parallel spectral gating.
+
+### Usage
 ```
 import torch
 from torch_gating import TorchGating as TG
@@ -61,7 +64,7 @@ noisy_speech = torch.randn(3, 32000, device=device)
 enhanced_speech = tg(noisy_speech)
 ```
 
-## Parameters
+### Parameters
 *   sr: Sample rate of the input signal.
 *   n_fft: The size of the FFT.
 *   hop_length: The number of samples between adjacent STFT columns.
@@ -74,6 +77,31 @@ enhanced_speech = tg(noisy_speech)
 *   n_thresh_nonstationary: The multiplier to apply to the sigmoid function in the non-stationary noise mask.
 *   temp_coeff_nonstationary: The temperature coefficient to apply to the sigmoid function in the non-stationary noise mask.
 *   prop_decrease: The proportion of decrease to apply to the mask.
+
+## Command-Line Interface
+The "run.py" script provides a command-line interface for applying the SpectralGate algorithm to audio files. The program will apply the SpectralGate algorithm to all audio files in the input directory, or to the single audio file specified by input_path, and save the processed files in the output directory. If the --graphs option is enabled, the program will also display input and output spectrograms as plots.
+
+### Usage
+Here is an example of how to use the script:
+```
+python spectralgate.py input_path --output output_path --nonstationary --verbose --norm --graphs --subdirs --figsize 10 6 --vmin -80 --vmax None --cmap magma --device cuda
+```
+
+### Parameters
+The script takes the following arguments:
+* input_path: Path to the directory containing audio files or to an audio file.
+* --output: Path to the directory to save the output files (default: 'output').
+* --nonstationary: Whether to use non-stationary or stationary masking (default: False).
+* --verbose: Flag indicating whether verbose mode is enabled (default: False).
+* --norm: Whether to normalize the signals (default: False).
+* --graphs: Flag indicating whether to display input and output spectrograms as plots (default: False).
+* --cpu: Flag indicating whether to run the algorithm on CPU instead of GPU (default: False).
+* --subdirs: Whether to create a subdirectory for stationary or non-stationary outputs (default: False).
+* --figsize: Figure size for the spectrogram plots in inches (default: (10, 6)).
+* --vmin: Minimum value for the color scale in dB (default: -80).
+* --vmax: Maximum value for the color scale in dB (default: None).
+* --cmap: Name of the colormap to use for the spectrogram plots (default: 'magma').
+* --device: Device to run the algorithm on ('cpu' or 'cuda', default: 'cuda' if available).
 
 ## Run Time Comparison
 A comparison of run time was conducted using the timeit module (@number=30) on a system equipped with an NVIDIA GeForce RTX 3070 GPU. 
