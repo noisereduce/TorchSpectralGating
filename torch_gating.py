@@ -161,10 +161,10 @@ class TorchGating(torch.nn.Module):
         if n_grad_time == 1 and n_grad_freq == 1:
             return None
 
-        _v_f = torch.cat([_linspace(0, 1, n_grad_freq + 1, endpoint=False), _linspace(1, 0, n_grad_freq + 2)])[1:-1]
-        _v_t = torch.cat([_linspace(0, 1, n_grad_time + 1, endpoint=False), _linspace(1, 0, n_grad_time + 2)])[1:-1]
+        v_f = torch.cat([_linspace(0, 1, n_grad_freq + 1, endpoint=False), _linspace(1, 0, n_grad_freq + 2)])[1:-1]
+        v_t = torch.cat([_linspace(0, 1, n_grad_time + 1, endpoint=False), _linspace(1, 0, n_grad_time + 2)])[1:-1]
 
-        return torch.outer(_v_f, _v_t).unsqueeze(0).unsqueeze(0)
+        return torch.outer(v_f, v_t).unsqueeze(0).unsqueeze(0)
 
     @torch.no_grad()
     def _stationary_mask(self, X_db: torch.Tensor, xn: Optional[torch.Tensor] = None) -> torch.Tensor:
@@ -224,7 +224,7 @@ class TorchGating(torch.nn.Module):
         """
         Apply the proposed algorithm to the input signal.
 
-        Args:
+        Arguments:
             x (torch.Tensor): The input audio signal, with shape (batch_size, signal_length).
             xn (Optional[torch.Tensor]): The noise signal used for stationary noise reduction. If `None`, the input
                                          signal is used as the noise signal. Default: `None`.
