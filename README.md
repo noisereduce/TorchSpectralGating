@@ -14,13 +14,19 @@ Sainburg, T. (2019). noise-reduction. GitHub. Retrieved from https://github.com/
 
 ***
 
-
+## Algorithm Scheme
+### Spectral Gating
+![Spectral Gating](graphs/SpectralGatingScheme.png)
+### Stationary Mask Estimation
+![Stationary Mask](graphs/StationaryMaskScheme.png)
+### Non-Stationary Mask Estimation
+![Non-Stationary Mask](graphs/NonStationaryMaskScheme.png)
 
 ## Installation
 Not available yet.
 
 ## Environment
-Python 3.x
+Python 3.x.
 ```
 matplotlib==3.7.1
 numpy==1.24.2
