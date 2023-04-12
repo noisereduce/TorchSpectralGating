@@ -1,6 +1,7 @@
 # TorchSpectralGating
 
 TorchSpectralGate is a PyTorch-based implementation of Spectral Gating, an algorithm for denoising audio signals.
+ It is designed to inherit from the nn.Module class, which allows it to be used either as a standalone module or as part of a larger neural network architecture.
 
 The algorithm was originally proposed by Sainburg et al [1] and was previously implemented in a GitHub repository [2]. The current implementation was developed in PyTorch to improve computational efficiency and reduce run time.
 
@@ -13,16 +14,25 @@ Sainburg, T. (2019). noise-reduction. GitHub. Retrieved from https://github.com/
 ***
 
 ## Installation
-Not available yet.
+```
+pip install torchgating
+```
 
 ## Environment
-Python 3.x.
+Tested on:
+```
+Python 3.10
+```
+
 ```
 matplotlib==3.7.1
 numpy==1.24.2
 soundfile==0.11.0
 torch==2.0.0.dev20221210+cu117
 ```
+
+Please note that TorchSpectralGating may work on other versions of the above dependencies, but these are the versions that were tested.
+
 ***
 
 
@@ -31,13 +41,13 @@ TorchSpectralGate supports both stationary and non-stationary noise reduction. T
 
 ### Spectral Gating
 TF-Mask can be estimated using stationary and non-stationary methods.
-![Spectral Gating](graphs/SpectralGatingScheme.png)
+![Spectral Gating](https://github.com/nuniz/TorchSpectralGating/blob/main/supplementary_material/graphs/NonStationaryMaskScheme.png)
 ### Stationary Mask Estimation
 Stationary TF-Mask estimation.
-![Stationary Mask](graphs/StationaryMaskScheme.png)
+![Stationary Mask](https://github.com/nuniz/TorchSpectralGating/blob/main/supplementary_material/graphs/StationaryMaskScheme.png)
 ### Non-Stationary Mask Estimation
 Non-stationary TF-Mask estimation.
-![Non-Stationary Mask](graphs/NonStationaryMaskScheme.png)
+![Non-Stationary Mask](https://github.com/nuniz/TorchSpectralGating/blob/main/supplementary_material/graphs/NonStationaryMaskScheme.png)
 ***
 
 ## TorchGating Class
@@ -46,7 +56,7 @@ Class for performing parallel spectral gating.
 ### Usage
 ```
 import torch
-from torch_gating import TorchGating as TG
+from torchgating import TorchGating as TG
 device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
 
 # Create TorchGating instance
@@ -77,12 +87,15 @@ enhanced_speech = tg(noisy_speech)
 
 
 ## Command-Line Interface
-The "run.py" script provides a command-line interface for applying the SpectralGate algorithm to audio files. The program will apply the SpectralGate algorithm to all audio files in the input directory, or to the single audio file specified by input_path, and save the processed files in the output directory. If the --graphs option is enabled, the program will also display input and output spectrograms as plots.
+The "run.py" script provides a command-line interface for applying the SpectralGate algorithm to audio files. 
+The program will apply the SpectralGate algorithm to all audio files in the input directory, 
+or to the single audio file specified by input_path, and save the processed files in the output directory. 
+If the --graphs option is enabled, the program will also display input and output spectrograms as plots.
 
 ### Usage
-Here is an example of how to use the script:
+Here is an example of how to use the command line interface:
 ```
-python run.py input_path --output_path output_path --nonstationary --verbose --norm --graphs --subdirs
+torchgating input_path --output_path output_path --nonstationary --verbose --norm --graphs --subdirs
 ```
 
 ### Arguments
@@ -137,7 +150,7 @@ This was done through the addition of interfering signals at signal-to-noise rat
 Hu, Y. and Loizou, P. (2007). “Subjective evaluation and comparison of speech enhancement algorithms,” Speech Communication, 49, 588-601.
 
 
-![Stationary Spectral Gating](graphs/sp09_car_sn5_stationary.png)
+![Stationary Spectral Gating](https://github.com/nuniz/TorchSpectralGating/blob/main/supplementary_material/graphs/sp09_car_sn5_stationary.png)
 
-![Non-Stationary Spectral Gating](graphs/sp09_car_sn5_non-stationary.png)
+![Non-Stationary Spectral Gating](https://github.com/nuniz/TorchSpectralGating/blob/main/supplementary_material/graphs/sp09_car_sn5_non-stationary.png)
 

@@ -6,7 +6,8 @@ import soundfile as sf
 import numpy as np
 import torch
 
-from torch_gating import TorchGating as TG
+from .torchgating import TorchGating as TG
+from .version import __version__
 
 EPS = np.finfo(float).eps
 
@@ -117,9 +118,17 @@ def plot_waveform_specgram(x: np.ndarray, y: np.ndarray, fs: int, title: str,
 
 
 def parse_args() -> argparse.Namespace:
+    """
+    Command line interface for torchgating
+
+    Returns:
+        argparse.Namespace
+    """
     parser = argparse.ArgumentParser(description="Audio processing script.")
     parser.add_argument('input_path', type=str,
                         help='Path to a directory containing audio files or to a single audio file.')
+    parser.add_argument("-v", "--version", action="version", version=f"torch-gating version: v{__version__}",
+                        help='Print torch-gating version')
     parser.add_argument('--output_path', type=str, default='output',
                         help='Path to a directory to save the processed audio files (default: output).')
     parser.add_argument('--nonstationary', action='store_true',
@@ -151,7 +160,6 @@ def parse_args() -> argparse.Namespace:
 
 def main():
     opt = parse_args()
-    vprint(opt, opt.verbose)
 
     # Device to run the model on
     device = torch.device("cpu") if opt.cpu else torch.device("cuda")
@@ -162,7 +170,7 @@ def main():
     if opt.norm:
         x /= (np.expand_dims(np.abs(x).max(axis=1), 1) + EPS)
 
-    # Initialize the SpectralGate module and apply it to the input data
+    #  and apply it to the input data
     tg = TG(sr=fs, nonstationary=opt.nonstationary).to(device)
     y = tg(torch.from_numpy(x).to(device)).cpu().numpy()
 

@@ -1,86 +1,12 @@
-'''
-
-TorchGating is a PyTorch-based implementation of Spectral Gating, an algorithm for denoising audio signals.
-
-The algorithm was originally proposed by Sainburg et al [1] and was previously implemented in a GitHub repository [2].
-
-[1] Sainburg, Tim, and Timothy Q. Gentner. “Toward a Computational Neuroethology of Vocal Communication:
-From Bioacoustics to Neurophysiology, Emerging Tools and Future Directions.”
-
-[2] Sainburg, T. (2019). noise-reduction. GitHub. Retrieved from https://github.com/timsainb/noisereduce.
-
-'''
-
 import torch
 from torch.nn.functional import conv1d, conv2d
-from torch.types import Number
 from typing import Union, Optional
-
-
-@torch.no_grad()
-def _amp_to_db(X: torch.Tensor, eps=torch.finfo(torch.float32).eps) -> torch.Tensor:
-    """
-    Convert the input tensor from amplitude to decibel scale.
-
-    Arguments:
-        X {[torch.Tensor]} -- [Input tensor.]
-
-    Keyword Arguments:
-        eps {[float]} -- [Small value to avoid numerical instability.]
-                          (default: {torch.finfo(torch.float32).eps})
-
-    Returns:
-        [torch.Tensor] -- [Output tensor in decibel scale.]
-    """
-    return torch.log10(X.abs() + eps)
-
-
-@torch.no_grad()
-def _temperature_sigmoid(x: torch.Tensor, x0: float, temp_coeff: float) -> torch.Tensor:
-    """
-    Apply a sigmoid function with temperature scaling.
-
-    Arguments:
-        x {[torch.Tensor]} -- [Input tensor.]
-        x0 {[float]} -- [Parameter that controls the threshold of the sigmoid.]
-        temp_coeff {[float]} -- [Parameter that controls the slope of the sigmoid.]
-
-    Returns:
-        [torch.Tensor] -- [Output tensor after applying the sigmoid with temperature scaling.]
-    """
-    return torch.sigmoid((x - x0) / temp_coeff)
-
-
-@torch.no_grad()
-def _linspace(start: Number, stop: Number, num: int = 50, endpoint: bool = True, **kwargs) -> torch.Tensor:
-    """
-    Generate a linearly spaced 1-D tensor.
-
-    Arguments:
-        start {[Number]} -- [The starting value of the sequence.]
-        stop {[Number]} -- [The end value of the sequence, unless `endpoint` is set to False.
-                            In that case, the sequence consists of all but the last of ``num + 1``
-                            evenly spaced samples, so that `stop` is excluded. Note that the step
-                            size changes when `endpoint` is False.]
-
-    Keyword Arguments:
-        num {[int]} -- [Number of samples to generate. Default is 50. Must be non-negative.]
-        endpoint {[bool]} -- [If True, `stop` is the last sample. Otherwise, it is not included.
-                              Default is True.]
-        **kwargs -- [Additional arguments to be passed to the underlying PyTorch `linspace` function.]
-
-    Returns:
-        [torch.Tensor] -- [1-D tensor of `num` equally spaced samples from `start` to `stop`.]
-    """
-    if endpoint:
-        return torch.linspace(start, stop, num, **kwargs)
-    else:
-        return torch.linspace(start, stop, num + 1, **kwargs)[:-1]
+from .utils import linspace, temperature_sigmoid, amp_to_db
 
 
 class TorchGating(torch.nn.Module):
     """
-    A PyTorch module that applies a spectral gate to an input signal using the STFT.
+    A PyTorch module that applies a spectral gate to an input signal.
 
     Arguments:
         sr {int} -- Sample rate of the input signal.
@@ -161,8 +87,8 @@ class TorchGating(torch.nn.Module):
         if n_grad_time == 1 and n_grad_freq == 1:
             return None
 
-        v_f = torch.cat([_linspace(0, 1, n_grad_freq + 1, endpoint=False), _linspace(1, 0, n_grad_freq + 2)])[1:-1]
-        v_t = torch.cat([_linspace(0, 1, n_grad_time + 1, endpoint=False), _linspace(1, 0, n_grad_time + 2)])[1:-1]
+        v_f = torch.cat([linspace(0, 1, n_grad_freq + 1, endpoint=False), linspace(1, 0, n_grad_freq + 2)])[1:-1]
+        v_t = torch.cat([linspace(0, 1, n_grad_time + 1, endpoint=False), linspace(1, 0, n_grad_time + 2)])[1:-1]
         smoothing_filter = torch.outer(v_f, v_t).unsqueeze(0).unsqueeze(0)
 
         return smoothing_filter
@@ -184,7 +110,7 @@ class TorchGating(torch.nn.Module):
             XN = torch.stft(xn, n_fft=self.n_fft, hop_length=self.hop_length, win_length=self.win_length,
                             return_complex=True, pad_mode='constant', center=True)
 
-            XN_db = _amp_to_db(XN).to(dtype=X_db.dtype)
+            XN_db = amp_to_db(XN).to(dtype=X_db.dtype)
         else:
             XN_db = X_db
 
@@ -217,7 +143,7 @@ class TorchGating(torch.nn.Module):
 
         # Compute slowness ratio and apply temperature sigmoid
         slowness_ratio = (X_abs - X_smoothed) / X_smoothed
-        sig_mask = _temperature_sigmoid(slowness_ratio, self.n_thresh_nonstationary, self.temp_coeff_nonstationary)
+        sig_mask = temperature_sigmoid(slowness_ratio, self.n_thresh_nonstationary, self.temp_coeff_nonstationary)
 
         return sig_mask
 
@@ -256,7 +182,7 @@ class TorchGating(torch.nn.Module):
         if self.nonstationary:
             sig_mask = self._nonstationary_mask(X.abs())
         else:
-            sig_mask = self._stationary_mask(_amp_to_db(X), xn)
+            sig_mask = self._stationary_mask(amp_to_db(X), xn)
 
         # Propagate decrease in signal power
         sig_mask = self.prop_decrease * (sig_mask * 1.0 - 1.0) + 1.0
