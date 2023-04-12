@@ -2,30 +2,12 @@ import setuptools
 import subprocess
 import os
 
-version = (
-    subprocess.run(["git", "describe", "--tags"], stdout=subprocess.PIPE)
-    .stdout.decode("utf-8")
-    .strip()
-)
-
-if "-" in version:
-    # https://peps.python.org/pep-0440/#local-version-segments
-    v, i, s = version.split("-")
-    version = v + "+" + i + ".git." + s
-
-assert "-" not in version
-assert "." in version
-
-assert os.path.isfile("torchgating/version.py")
-with open("torchgating/version.py", "w", encoding="utf-8") as fh:
-    fh.write("%s\n" % f"__version__ = '{version}'")
-
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setuptools.setup(
     name="torchgating",
-    version=version,
+    version="0.1.0-alpha",
     author="Asaf Zorea",
     author_email="zoreasaf@gmail.com",
     description="A PyTorch-based implementation of Spectral Gating, an algorithm for denoising audio signals",
