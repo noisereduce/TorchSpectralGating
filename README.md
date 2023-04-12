@@ -89,19 +89,19 @@ enhanced_speech = tg(noisy_speech)
 ## Command-Line Interface
 The "run.py" script provides a command-line interface for applying the SpectralGate algorithm to audio files. 
 The program will apply the SpectralGate algorithm to all audio files in the input directory, 
-or to the single audio file specified by input_path, and save the processed files in the output directory. 
+or to the single audio file specified by 'input', and save the processed files in the output directory. 
 If the --graphs option is enabled, the program will also display input and output spectrograms as plots.
 
 ### Usage
 Here is an example of how to use the command line interface:
 ```
-torchgating input_path --output_path output_path --nonstationary --verbose --norm --graphs --subdirs
+torchgating <input_path> --output <output_path> --nonstationary --verbose --norm --graphs --subdirs
 ```
 
 ### Arguments
 The script takes the following arguments:
-* input_path: Path to a directory containing audio files or to a single audio file.
-* --output_path: Path to a directory to save the output files (default: 'output').
+* input: Path to a directory containing audio files or to a single audio file.
+* --output: Path to a directory to save the output files (default: 'output').
 * --nonstationary: Whether to use non-stationary or stationary masking (default: False).
 * --verbose: Flag indicating whether verbose mode is enabled (default: False).
 * --cpu: Flag indicating whether to run the algorithm on CPU instead of GPU (default: False).
