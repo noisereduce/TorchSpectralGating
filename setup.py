@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="torchgating",
-    version="0.1.0-alpha",
+    version="0.1.1-alpha",
     author="Asaf Zorea",
     author_email="zoreasaf@gmail.com",
     description="A PyTorch-based implementation of Spectral Gating, an algorithm for denoising audio signals",
