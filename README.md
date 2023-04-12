@@ -35,21 +35,6 @@ Please note that TorchSpectralGating may work on other versions of the above dep
 
 ***
 
-
-## Implementation Scheme
-TorchSpectralGate supports both stationary and non-stationary noise reduction. To enable parallel computation, a few modifications were made to the original algorithm. In the non-stationary spectral gating, an FIR filter was implemented instead of an IIR filter.
-
-### Spectral Gating
-TF-Mask can be estimated using stationary and non-stationary methods.
-![Spectral Gating](https://github.com/nuniz/TorchSpectralGating/blob/main/supplementary_material/graphs/NonStationaryMaskScheme.png)
-### Stationary Mask Estimation
-Stationary TF-Mask estimation.
-![Stationary Mask](https://github.com/nuniz/TorchSpectralGating/blob/main/supplementary_material/graphs/StationaryMaskScheme.png)
-### Non-Stationary Mask Estimation
-Non-stationary TF-Mask estimation.
-![Non-Stationary Mask](https://github.com/nuniz/TorchSpectralGating/blob/main/supplementary_material/graphs/NonStationaryMaskScheme.png)
-***
-
 ## TorchGating Class
 Class for performing parallel spectral gating.
 
@@ -115,6 +100,19 @@ The script takes the following arguments:
 * --cmap: Name of the colormap to use for the spectrogram plots (default: 'magma').
 ***
 
+## Implementation Scheme
+TorchSpectralGate supports both stationary and non-stationary noise reduction. To enable parallel computation, a few modifications were made to the original algorithm. In the non-stationary spectral gating, an FIR filter was implemented instead of an IIR filter.
+
+### Spectral Gating
+TF-Mask can be estimated using stationary and non-stationary methods.
+![Spectral Gating](https://github.com/nuniz/TorchSpectralGating/blob/main/supplementary_material/graphs/SpectralGatingScheme.png)
+### Stationary Mask Estimation
+Stationary TF-Mask estimation.
+![Stationary Mask](https://github.com/nuniz/TorchSpectralGating/blob/main/supplementary_material/graphs/StationaryMaskScheme.png)
+### Non-Stationary Mask Estimation
+Non-stationary TF-Mask estimation.
+![Non-Stationary Mask](https://github.com/nuniz/TorchSpectralGating/blob/main/supplementary_material/graphs/NonStationaryMaskScheme.png)
+***
 
 ## Run Time Comparison
 A comparison of run time was conducted using the timeit module (@number=30) on a system equipped with an NVIDIA GeForce RTX 3070 GPU. 
