@@ -34,7 +34,7 @@ setuptools.setup(
     license='MIT',
     url="https://github.com/nuniz/TorchSpectralGating",
     packages=setuptools.find_packages(exclude=["tests", "*.tests", "*.tests.*", "tests.*", "tests.*"]),
-    include_package_data=False,
+    include_package_data=True,
     classifiers=[
         "Programming Language :: Python :: 3",
         'License :: OSI Approved :: MIT License',
