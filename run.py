@@ -8,6 +8,8 @@ import torch
 
 from torch_gating import TorchGating as TG
 
+EPS = np.finfo(float).eps
+
 
 def vprint(msg: str, verbose: bool):
     """
@@ -117,30 +119,32 @@ def plot_waveform_specgram(x: np.ndarray, y: np.ndarray, fs: int, title: str,
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Audio processing script.")
     parser.add_argument('input_path', type=str,
-                        help='Path to the directory containing audio files or to an audio file.')
+                        help='Path to a directory containing audio files or to a single audio file.')
     parser.add_argument('--output_path', type=str, default='output',
-                        help='Path to the directory to save the processed audio files. (default: output)')
+                        help='Path to a directory to save the processed audio files (default: output).')
     parser.add_argument('--nonstationary', action='store_true',
-                        help='Whether to use non-stationary or stationary masking. (default: stationary)')
+                        help='Whether to use non-stationary or stationary masking (default: stationary).')
     parser.add_argument('--verbose', action='store_true',
-                        help='Print detailed information about the processing. (default: False)')
+                        help='Print detailed information about the processing (default: False).')
     parser.add_argument('--norm', action='store_true',
-                        help='Whether to normalize the signals. (default: False)')
+                        help='Whether to normalize the signals (default: False).')
     parser.add_argument('--graphs', action='store_true',
-                        help='Whether to save graphs of the processed audio signals. (default: False)')
+                        help='Whether to save graphs of the processed audio signals (default: False).')
     parser.add_argument('--cpu', action='store_true',
-                        help='Use CPU instead of GPU for processing. (default: False)')
+                        help='Use CPU instead of GPU for processing (default: False).')
     parser.add_argument('--subdirs', action='store_true',
-                        help='Create subdirectories for the processed audio files based on stationary/non-stationary. '
-                             '(default: False)')
+                        help='Create subdirectories for the processed audio files based on stationary/non-stationary '
+                             '(default: False).')
     parser.add_argument('--figsize', type=tuple, default=(10, 6),
-                        help='Size of the figure for the displayed spectrograms. (default: (10, 6))')
+                        help='Size of the figure for the displayed spectrograms (default: (10, 6)).')
+    parser.add_argument('--figformat', type=str, default='png',
+                        help='If figformat is set, it determines the output format (default: png).')
     parser.add_argument('--vmin', type=Optional[int], default=-80,
-                        help='Minimum value for the color scale of the spectrograms. (default: -80)')
+                        help='Minimum value for the color scale of the spectrograms (default: -80).')
     parser.add_argument('--vmax', type=Optional[int], default=None,
-                        help='Maximum value for the color scale of the spectrograms. (default: None)')
+                        help='Maximum value for the color scale of the spectrograms (default: None).')
     parser.add_argument('--cmap', type=str, default='magma',
-                        help='Name of the colormap to use for the spectrograms. (default: magma)')
+                        help='Name of the colormap to use for the spectrograms (default: magma).')
 
     return parser.parse_args()
 
@@ -156,14 +160,14 @@ def main():
     # Load audio files
     files, x, fs = load_audio_files(opt.input_path, opt.verbose)
     if opt.norm:
-        x /= np.expand_dims(np.abs(x).max(axis=1), 1)
+        x /= (np.expand_dims(np.abs(x).max(axis=1), 1) + EPS)
 
     # Initialize the SpectralGate module and apply it to the input data
     tg = TG(sr=fs, nonstationary=opt.nonstationary).to(device)
     y = tg(torch.from_numpy(x).to(device)).cpu().numpy()
 
     if opt.norm:
-        y /= np.expand_dims(np.abs(y).max(axis=1), 1)
+        y /= (np.expand_dims(np.abs(y).max(axis=1), 1) + EPS)
 
     subdirs = fr"{'non-stationary' if opt.nonstationary else 'stationary'}" if opt.subdirs else None
     output_dir = check_dir(opt.output_path, subdirs, opt.verbose)
@@ -185,7 +189,7 @@ def main():
                                               figsize=opt.figsize,
                                               title=f"{files[i]} | {'Non-Stationary' if opt.nonstationary else 'Stationary'}")
 
-            outpath = os.path.join(output_dir, f"{filename[:filename.rindex('.')]}.png")
+            outpath = os.path.join(output_dir, f"{filename[:filename.rindex('.')]}.{opt.figformat}")
             fig.savefig(outpath)
             vprint(fr'Saved {outpath}', opt.verbose)
 

@@ -33,10 +33,10 @@ TorchSpectralGate supports both stationary and non-stationary noise reduction. T
 TF-Mask can be estimated using stationary and non-stationary methods.
 ![Spectral Gating](graphs/SpectralGatingScheme.png)
 ### Stationary Mask Estimation
-Staitonary TF-Mask estimation.
+Stationary TF-Mask estimation.
 ![Stationary Mask](graphs/StationaryMaskScheme.png)
 ### Non-Stationary Mask Estimation
-Non-staitonary TF-Mask estimation.
+Non-stationary TF-Mask estimation.
 ![Non-Stationary Mask](graphs/NonStationaryMaskScheme.png)
 ***
 
@@ -58,18 +58,21 @@ enhanced_speech = tg(noisy_speech)
 ```
 
 ### Parameters
-*   sr: Sample rate of the input signal.
-*   n_fft: The size of the FFT.
-*   hop_length: The number of samples between adjacent STFT columns.
-*   win_length: The window size for the STFT. If None, defaults to n_fft.
-*   freq_mask_smooth_hz: The frequency smoothing width in Hz for the masking filter. If None, no frequency masking is applied.
-*   time_mask_smooth_ms: The time smoothing width in milliseconds for the masking filter. If None, no time masking is applied.
-*   n_std_thresh_stationary: The number of standard deviations above the noise mean to consider as signal for stationary noise.
-*   nonstationary: Whether to use non-stationary noise masking.
-*   n_movemean_nonstationary: The number of frames to use for the moving average in the non-stationary noise mask.
-*   n_thresh_nonstationary: The multiplier to apply to the sigmoid function in the non-stationary noise mask.
-*   temp_coeff_nonstationary: The temperature coefficient to apply to the sigmoid function in the non-stationary noise mask.
-*   prop_decrease: The proportion of decrease to apply to the mask.
+
+| Parameter                | Description                                                                                           |
+|--------------------------|-------------------------------------------------------------------------------------------------------|
+| sr                       | Sample rate of the input signal.                                                                      |
+| n_fft                    | The size of the FFT.                                                                                  |
+| hop_length               | The number of samples between adjacent STFT columns.                                                  |
+| win_length               | The window size for the STFT. If None, defaults to n_fft.                                             |
+| freq_mask_smooth_hz      | The frequency smoothing width in Hz for the masking filter. If None, no frequency masking is applied. |
+| time_mask_smooth_ms      | The time smoothing width in milliseconds for the masking filter. If None, no time masking is applied. |
+| n_std_thresh_stationary  | The number of standard deviations above the noise mean to consider as signal for stationary noise.    |
+| nonstationary            | Whether to use non-stationary noise masking.                                                          |
+| n_movemean_nonstationary | The number of frames to use for the moving average in the non-stationary noise mask.                  |
+| n_thresh_nonstationary   | The multiplier to apply to the sigmoid function in the non-stationary noise mask.                     |
+| temp_coeff_nonstationary | The temperature coefficient to apply to the sigmoid function in the non-stationary noise mask.        |
+| prop_decrease            | The proportion of decrease to apply to the mask.                                                      |
 ***
 
 
@@ -79,20 +82,21 @@ The "run.py" script provides a command-line interface for applying the SpectralG
 ### Usage
 Here is an example of how to use the script:
 ```
-python run.py input_path --output output_path --nonstationary --verbose --norm --graphs --subdirs
+python run.py input_path --output_path output_path --nonstationary --verbose --norm --graphs --subdirs
 ```
 
-### Parameters
+### Arguments
 The script takes the following arguments:
-* input_path: Path to the directory containing audio files or to an audio file.
-* --output_path: Path to the directory to save the output files (default: 'output').
+* input_path: Path to a directory containing audio files or to a single audio file.
+* --output_path: Path to a directory to save the output files (default: 'output').
 * --nonstationary: Whether to use non-stationary or stationary masking (default: False).
 * --verbose: Flag indicating whether verbose mode is enabled (default: False).
-* --norm: Whether to normalize the signals (default: False).
-* --graphs: Flag indicating whether to display input and output spectrograms as plots (default: False).
 * --cpu: Flag indicating whether to run the algorithm on CPU instead of GPU (default: False).
 * --subdirs: Whether to create a subdirectory for stationary or non-stationary outputs (default: False).
+* --norm: Whether to normalize the signals (default: False).
+* --graphs: Flag indicating whether to display input and output spectrograms as plots (default: False).
 * --figsize: Figure size for the spectrogram plots in inches (default: (10, 6)).
+* --figformat: If figformat is set, it determines the output format (default: png).
 * --vmin: Minimum value for the color scale in dB (default: -80).
 * --vmax: Maximum value for the color scale in dB (default: None).
 * --cmap: Name of the colormap to use for the spectrogram plots (default: 'magma').
@@ -102,6 +106,7 @@ The script takes the following arguments:
 ## Run Time Comparison
 A comparison of run time was conducted using the timeit module (@number=30) on a system equipped with an NVIDIA GeForce RTX 3070 GPU. 
 The purpose of the comparison was to evaluate the computational efficiency of the TorchSpectralGate implementation of the Spectral Gating algorithm compared to the original implementation.
+
 
 **Stationary**
 | Number of Inputs|Input Size|TorchGating Time sec|NoiseReduce Time sec|

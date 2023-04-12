@@ -140,7 +140,7 @@ class TorchGating(torch.nn.Module):
         A PyTorch module that applies a spectral gate to an input signal using the STFT.
 
         Returns:
-            _smoothing_filter (torch.Tensor): a 2D tensor representing the smoothing filter,
+            smoothing_filter (torch.Tensor): a 2D tensor representing the smoothing filter,
             with shape (n_grad_freq, n_grad_time), where n_grad_freq is the number of frequency
             bins to smooth and n_grad_time is the number of time frames to smooth.
             If both self.freq_mask_smooth_hz and self.time_mask_smooth_ms are None, returns None.
@@ -163,8 +163,9 @@ class TorchGating(torch.nn.Module):
 
         v_f = torch.cat([_linspace(0, 1, n_grad_freq + 1, endpoint=False), _linspace(1, 0, n_grad_freq + 2)])[1:-1]
         v_t = torch.cat([_linspace(0, 1, n_grad_time + 1, endpoint=False), _linspace(1, 0, n_grad_time + 2)])[1:-1]
+        smoothing_filter = torch.outer(v_f, v_t).unsqueeze(0).unsqueeze(0)
 
-        return torch.outer(v_f, v_t).unsqueeze(0).unsqueeze(0)
+        return smoothing_filter
 
     @torch.no_grad()
     def _stationary_mask(self, X_db: torch.Tensor, xn: Optional[torch.Tensor] = None) -> torch.Tensor:
