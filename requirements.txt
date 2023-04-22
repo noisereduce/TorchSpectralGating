@@ -2,4 +2,3 @@ matplotlib
 numpy
 soundfile
 torch
-warnings
