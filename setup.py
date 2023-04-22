@@ -23,9 +23,9 @@ setuptools.setup(
     python_requires=">=3.6",
     entry_points={"console_scripts": ["torchgating = torchgating.run:main"]},
     install_requires=[
-        "matplotlib >= 3.7.1",
-        "numpy >= 1.23.5",
-        "soundfile >= 0.11.0",
-        "torch >= 2.0.0",
+        "matplotlib",
+        "numpy",
+        "soundfile",
+        "torch",
     ],
 )
