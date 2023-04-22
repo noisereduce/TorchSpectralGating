@@ -5,10 +5,12 @@ import matplotlib.pyplot as plt
 import soundfile as sf
 import numpy as np
 import torch
+import warnings
 
 from .torchgating import TorchGating as TG
 from .version import __version__
 
+warnings.filterwarnings("ignore")
 EPS = np.finfo(float).eps
 
 
