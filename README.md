@@ -1,5 +1,5 @@
 # TorchSpectralGating
-The TorchSpectralGate package has now been integrated into ![noisereduce](https://github.com/timsainb/noisereduce).
+The TorchSpectralGate package (@v0.1.1-beta | 4aeeb92) has now been integrated into ![noisereduce](https://github.com/timsainb/noisereduce).
 
 TorchSpectralGate is a PyTorch-based implementation of Spectral Gating, an algorithm for denoising audio signals.
  It is designed to inherit from the nn.Module class, which allows it to be used either as a standalone module or as part of a larger neural network architecture.
