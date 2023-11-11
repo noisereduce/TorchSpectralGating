@@ -32,7 +32,7 @@ class TorchGating(torch.nn.Module):
     def __init__(self, sr: int, nonstationary: bool = False, n_std_thresh_stationary: float = 1.5,
                  n_thresh_nonstationary: bool = 1.3, temp_coeff_nonstationary: float = 0.1,
                  n_movemean_nonstationary: int = 20, prop_decrease: float = 1.0, n_fft: int = 1024,
-                 win_length: bool = None, hop_length: int = None, freq_mask_smooth_hz: float = 500,
+                 win_length: int = None, hop_length: int = None, freq_mask_smooth_hz: float = 500,
                  time_mask_smooth_ms: float = 50):
         super().__init__()
 
