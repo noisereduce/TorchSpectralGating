@@ -165,7 +165,7 @@ def main():
 
     # Device to run the model on
     device = torch.device("cpu") if opt.cpu else torch.device("cuda")
-    assert not opt.cpu or torch.cuda.is_available()
+    assert opt.cpu or torch.cuda.is_available()
 
     # Load audio files
     files, x, fs = load_audio_files(opt.input, opt.verbose)
