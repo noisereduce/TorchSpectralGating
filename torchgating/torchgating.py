@@ -77,7 +77,7 @@ class TorchGating(torch.nn.Module):
         n_grad_freq = 1 if self.freq_mask_smooth_hz is None \
             else int(self.freq_mask_smooth_hz / (self.sr / (self.n_fft / 2)))
         if n_grad_freq < 1:
-            raise ValueError(f"freq_mask_smooth_hz needs to be at least {int((self.sr / (self._n_fft / 2)))} Hz")
+            raise ValueError(f"freq_mask_smooth_hz needs to be at least {int((self.sr / (self.n_fft / 2)))} Hz")
 
         n_grad_time = 1 if self.time_mask_smooth_ms is None \
             else int(self.time_mask_smooth_ms / ((self.hop_length / self.sr) * 1000))
