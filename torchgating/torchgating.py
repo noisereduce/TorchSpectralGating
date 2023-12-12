@@ -153,7 +153,7 @@ class TorchGating(torch.nn.Module):
 
         return sig_mask
 
-    def forward(self, x: torch.Tensor, xn: Optional[torch.Tensor] = None) -> torch.Tensor:
+    def forward(self, x: torch.Tensor, xn: Optional[torch.Tensor] = None, get_mask: bool = False) -> torch.Tensor:
         """
         Apply the proposed algorithm to the input signal.
 
@@ -161,6 +161,7 @@ class TorchGating(torch.nn.Module):
             x (torch.Tensor): The input audio signal, with shape (batch_size, signal_length).
             xn (Optional[torch.Tensor]): The noise signal used for stationary noise reduction. If `None`, the input
                                          signal is used as the noise signal. Default: `None`.
+            get_mask (bool): Extract the gating mask instead of the output signal. Default: False.
 
         Returns:
             torch.Tensor: The denoised audio signal, with the same shape as the input signal.
@@ -198,18 +199,21 @@ class TorchGating(torch.nn.Module):
         if self.smoothing_filter is not None:
             sig_mask = conv2d(sig_mask.unsqueeze(1), self.smoothing_filter.to(sig_mask.dtype), padding='same')
 
-        # Apply signal mask to STFT magnitude and phase components
-        Y = X * sig_mask.squeeze(1)
-        # Y = X.abs() * sig_mask.squeeze(1) * torch.exp(1j * X.angle())
+        if get_mask:
+            return sig_mask
+        else:
+            # Apply signal mask to STFT magnitude and phase components
+            Y = X * sig_mask.squeeze(1)
+            # Y = X.abs() * sig_mask.squeeze(1) * torch.exp(1j * X.angle())
 
-        # Inverse STFT to obtain time-domain signal
-        y = torch.istft(
-            Y,
-            n_fft=self.n_fft,
-            hop_length=self.hop_length,
-            win_length=self.win_length,
-            center=True,
-            window=torch.hann_window(self.win_length).to(Y.device)
-        )
+            # Inverse STFT to obtain time-domain signal
+            y = torch.istft(
+                Y,
+                n_fft=self.n_fft,
+                hop_length=self.hop_length,
+                win_length=self.win_length,
+                center=True,
+                window=torch.hann_window(self.win_length).to(Y.device)
+            )
 
-        return y.to(dtype=x.dtype)
+            return y.to(dtype=x.dtype)
