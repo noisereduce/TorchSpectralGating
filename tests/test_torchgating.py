@@ -1,5 +1,7 @@
 import unittest
+
 import torch
+
 from torchgating import TorchGating as TG
 
 
@@ -16,7 +18,9 @@ class TestTorchGating(unittest.TestCase):
             sr (int): Signal sampling frequency.
         """
 
-        device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
+        device = (
+            torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
+        )
 
         # Create TorchGating instance
         tg = TG(sr=sr, nonstationary=True).to(device)
@@ -34,7 +38,9 @@ class TestTorchGating(unittest.TestCase):
             sr (int): Signal sampling frequency.
         """
 
-        device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
+        device = (
+            torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
+        )
 
         # Create TorchGating instance
         tg = TG(sr=sr, nonstationary=False).to(device)
@@ -45,5 +51,5 @@ class TestTorchGating(unittest.TestCase):
         self.assertIsNotNone(enhanced_speech)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

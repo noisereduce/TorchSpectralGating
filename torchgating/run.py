@@ -1,11 +1,12 @@
-from typing import Optional, Tuple
 import argparse
 import os
-import matplotlib.pyplot as plt
-import soundfile as sf
-import numpy as np
-import torch
 import warnings
+from typing import Optional, Tuple
+
+import matplotlib.pyplot as plt
+import numpy as np
+import soundfile as sf
+import torch
 
 from .torchgating import TorchGating as TG
 from .version import __version__
@@ -16,12 +17,12 @@ EPS = np.finfo(float).eps
 
 def vprint(msg: str, verbose: bool):
     """
-     Utility function to print a message if verbose mode is enabled.
+    Utility function to print a message if verbose mode is enabled.
 
-     Arguments:
-         msg (str): Message to print.
-         verbose (bool): Flag indicating whether verbose mode is enabled.
-     """
+    Arguments:
+        msg (str): Message to print.
+        verbose (bool): Flag indicating whether verbose mode is enabled.
+    """
     if verbose:
         print(msg)
 
@@ -42,7 +43,7 @@ def check_dir(path: str, subdir: Optional[str], verbose: bool) -> str:
         path = os.path.join(path, subdir)
     if not os.path.exists(path):
         os.makedirs(path)
-        vprint(f'Created {path}', verbose)
+        vprint(f"Created {path}", verbose)
     return path
 
 
@@ -70,7 +71,7 @@ def load_audio_files(path: str, verbose: bool) -> tuple:
     for i, f in enumerate(file_list):
         try:
             audio, sr = sf.read(os.path.join(dir_path, f))
-            vprint(f'Load {f}', verbose)
+            vprint(f"Load {f}", verbose)
 
             audio_data.append(audio)
             if i == 0:
@@ -80,7 +81,7 @@ def load_audio_files(path: str, verbose: bool) -> tuple:
 
         except Exception as e:
             file_list.remove(f)
-            raise Warning(f'Could not read {f}. {e}')
+            raise Warning(f"Could not read {f}. {e}")
 
     assert len(file_list) > 0
     audio_data = np.vstack(audio_data)
@@ -88,9 +89,16 @@ def load_audio_files(path: str, verbose: bool) -> tuple:
     return file_list, audio_data, sample_rate
 
 
-def plot_waveform_specgram(x: np.ndarray, y: np.ndarray, fs: int, title: str,
-                           vmin: Optional[int] = None, vmax: Optional[int] = None,
-                           cmap: str = 'magma', figsize: Tuple[int, int] = (10, 8)) -> Tuple[plt.Figure, np.ndarray]:
+def plot_waveform_specgram(
+    x: np.ndarray,
+    y: np.ndarray,
+    fs: int,
+    title: str,
+    vmin: Optional[int] = None,
+    vmax: Optional[int] = None,
+    cmap: str = "magma",
+    figsize: Tuple[int, int] = (10, 8),
+) -> Tuple[plt.Figure, np.ndarray]:
     """
     Plot the waveform and spectrogram of input and output audio signals.
 
@@ -127,35 +135,85 @@ def parse_args() -> argparse.Namespace:
         argparse.Namespace
     """
     parser = argparse.ArgumentParser(description="Audio processing script.")
-    parser.add_argument('input', type=str,
-                        help='Path to a directory containing audio files or to a single audio file.')
-    parser.add_argument("-v", "--version", action="version", version=f"torch-gating version: v{__version__}",
-                        help='Print torch-gating version')
-    parser.add_argument('--output', type=str, default='output',
-                        help='Path to a directory to save the processed audio files (default: output).')
-    parser.add_argument('--nonstationary', action='store_true',
-                        help='Whether to use non-stationary or stationary masking (default: stationary).')
-    parser.add_argument('--verbose', action='store_true',
-                        help='Print detailed information about the processing (default: False).')
-    parser.add_argument('--norm', action='store_true',
-                        help='Whether to normalize the signals (default: False).')
-    parser.add_argument('--graphs', action='store_true',
-                        help='Whether to save graphs of the processed audio signals (default: False).')
-    parser.add_argument('--cpu', action='store_true',
-                        help='Use CPU instead of GPU for processing (default: False).')
-    parser.add_argument('--subdirs', action='store_true',
-                        help='Create subdirectories for the processed audio files based on stationary/non-stationary '
-                             '(default: False).')
-    parser.add_argument('--figsize', type=tuple, default=(10, 6),
-                        help='Size of the figure for the displayed spectrograms (default: (10, 6)).')
-    parser.add_argument('--figformat', type=str, default='png',
-                        help='If figformat is set, it determines the output format (default: png).')
-    parser.add_argument('--vmin', type=Optional[int], default=-80,
-                        help='Minimum value for the color scale of the spectrograms (default: -80).')
-    parser.add_argument('--vmax', type=Optional[int], default=None,
-                        help='Maximum value for the color scale of the spectrograms (default: None).')
-    parser.add_argument('--cmap', type=str, default='magma',
-                        help='Name of the colormap to use for the spectrograms (default: magma).')
+    parser.add_argument(
+        "input",
+        type=str,
+        help="Path to a directory containing audio files or to a single audio file.",
+    )
+    parser.add_argument(
+        "-v",
+        "--version",
+        action="version",
+        version=f"torch-gating version: v{__version__}",
+        help="Print torch-gating version",
+    )
+    parser.add_argument(
+        "--output",
+        type=str,
+        default="output",
+        help="Path to a directory to save the processed audio files (default: output).",
+    )
+    parser.add_argument(
+        "--nonstationary",
+        action="store_true",
+        help="Whether to use non-stationary or stationary masking (default: stationary).",
+    )
+    parser.add_argument(
+        "--verbose",
+        action="store_true",
+        help="Print detailed information about the processing (default: False).",
+    )
+    parser.add_argument(
+        "--norm",
+        action="store_true",
+        help="Whether to normalize the signals (default: False).",
+    )
+    parser.add_argument(
+        "--graphs",
+        action="store_true",
+        help="Whether to save graphs of the processed audio signals (default: False).",
+    )
+    parser.add_argument(
+        "--cpu",
+        action="store_true",
+        help="Use CPU instead of GPU for processing (default: False).",
+    )
+    parser.add_argument(
+        "--subdirs",
+        action="store_true",
+        help="Create subdirectories for the processed audio files based on stationary/non-stationary "
+        "(default: False).",
+    )
+    parser.add_argument(
+        "--figsize",
+        type=tuple,
+        default=(10, 6),
+        help="Size of the figure for the displayed spectrograms (default: (10, 6)).",
+    )
+    parser.add_argument(
+        "--figformat",
+        type=str,
+        default="png",
+        help="If figformat is set, it determines the output format (default: png).",
+    )
+    parser.add_argument(
+        "--vmin",
+        type=Optional[int],
+        default=-80,
+        help="Minimum value for the color scale of the spectrograms (default: -80).",
+    )
+    parser.add_argument(
+        "--vmax",
+        type=Optional[int],
+        default=None,
+        help="Maximum value for the color scale of the spectrograms (default: None).",
+    )
+    parser.add_argument(
+        "--cmap",
+        type=str,
+        default="magma",
+        help="Name of the colormap to use for the spectrograms (default: magma).",
+    )
 
     return parser.parse_args()
 
@@ -170,41 +228,49 @@ def main():
     # Load audio files
     files, x, fs = load_audio_files(opt.input, opt.verbose)
     if opt.norm:
-        x /= (np.expand_dims(np.abs(x).max(axis=1), 1) + EPS)
+        x /= np.expand_dims(np.abs(x).max(axis=1), 1) + EPS
 
     #  and apply it to the input data
     tg = TG(sr=fs, nonstationary=opt.nonstationary).to(device)
     y = tg(torch.from_numpy(x).to(device)).cpu().numpy()
 
     if opt.norm:
-        y /= (np.expand_dims(np.abs(y).max(axis=1), 1) + EPS)
+        y /= np.expand_dims(np.abs(y).max(axis=1), 1) + EPS
 
-    subdirs = fr"{'non-stationary' if opt.nonstationary else 'stationary'}" if opt.subdirs else None
+    subdirs = (
+        rf"{'non-stationary' if opt.nonstationary else 'stationary'}"
+        if opt.subdirs
+        else None
+    )
     output_dir = check_dir(opt.output, subdirs, opt.verbose)
 
     for i, filename in enumerate(files):
         # Save processed audio
         outpath = os.path.join(output_dir, filename)
         sf.write(outpath, y[i], fs)
-        vprint(fr'Saved {outpath}', opt.verbose)
+        vprint(rf"Saved {outpath}", opt.verbose)
 
         if opt.graphs:
             # Display input and output spectrograms as plots
-            fig, axs = plot_waveform_specgram(x[i],
-                                              y[i],
-                                              fs=fs,
-                                              cmap=opt.cmap,
-                                              vmin=opt.vmin,
-                                              vmax=opt.vmax,
-                                              figsize=opt.figsize,
-                                              title=f"{files[i]} | {'Non-Stationary' if opt.nonstationary else 'Stationary'}")
+            fig, axs = plot_waveform_specgram(
+                x[i],
+                y[i],
+                fs=fs,
+                cmap=opt.cmap,
+                vmin=opt.vmin,
+                vmax=opt.vmax,
+                figsize=opt.figsize,
+                title=f"{files[i]} | {'Non-Stationary' if opt.nonstationary else 'Stationary'}",
+            )
 
-            outpath = os.path.join(output_dir, f"{filename[:filename.rindex('.')]}.{opt.figformat}")
+            outpath = os.path.join(
+                output_dir, f"{filename[:filename.rindex('.')]}.{opt.figformat}"
+            )
             fig.savefig(outpath)
-            vprint(fr'Saved {outpath}', opt.verbose)
+            vprint(rf"Saved {outpath}", opt.verbose)
 
-    vprint('Done', opt.verbose)
+    vprint("Done", opt.verbose)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
