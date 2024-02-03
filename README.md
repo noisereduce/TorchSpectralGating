@@ -106,13 +106,13 @@ TorchSpectralGate supports both stationary and non-stationary noise reduction. T
 
 ### Spectral Gating
 TF-Mask can be estimated using stationary and non-stationary methods.
-![Spectral Gating](https://github.com/nuniz/TorchSpectralGating/blob/main/supplementary_material/graphs/SpectralGatingScheme.png)
+![Spectral Gating](https://github.com/noisereduce/TorchSpectralGating/blob/main/supplementary_material/graphs/SpectralGatingScheme.png)
 ### Stationary Mask Estimation
 Stationary TF-Mask estimation.
-![Stationary Mask](https://github.com/nuniz/TorchSpectralGating/blob/main/supplementary_material/graphs/StationaryMaskScheme.png)
+![Stationary Mask](https://github.com/noisereduce/TorchSpectralGating/blob/main/supplementary_material/graphs/StationaryMaskScheme.png)
 ### Non-Stationary Mask Estimation
 Non-stationary TF-Mask estimation.
-![Non-Stationary Mask](https://github.com/nuniz/TorchSpectralGating/blob/main/supplementary_material/graphs/NonStationaryMaskScheme.png)
+![Non-Stationary Mask](https://github.com/noisereduce/TorchSpectralGating/blob/main/supplementary_material/graphs/NonStationaryMaskScheme.png)
 ***
 
 ## Run Time Comparison
@@ -149,7 +149,7 @@ This was done through the addition of interfering signals at signal-to-noise rat
 Hu, Y. and Loizou, P. (2007). “Subjective evaluation and comparison of speech enhancement algorithms,” Speech Communication, 49, 588-601.
 
 
-![Stationary Spectral Gating](https://github.com/nuniz/TorchSpectralGating/blob/main/supplementary_material/graphs/sp09_car_sn5_stationary.png)
+![Stationary Spectral Gating](https://github.com/noisereduce/TorchSpectralGating/blob/main/supplementary_material/graphs/sp09_car_sn5_stationary.png)
 
-![Non-Stationary Spectral Gating](https://github.com/nuniz/TorchSpectralGating/blob/main/supplementary_material/graphs/sp09_car_sn5_non-stationary.png)
+![Non-Stationary Spectral Gating](https://github.com/noisereduce/TorchSpectralGating/blob/main/supplementary_material/graphs/sp09_car_sn5_non-stationary.png)
 
