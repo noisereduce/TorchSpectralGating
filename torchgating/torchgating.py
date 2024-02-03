@@ -145,7 +145,6 @@ class TorchGating(torch.nn.Module):
                 center=True,
                 window=torch.hann_window(self.win_length).to(xn.device),
             )
-
             XN_db = amp_to_db(XN).to(dtype=X_db.dtype)
         else:
             XN_db = X_db
@@ -193,7 +192,9 @@ class TorchGating(torch.nn.Module):
 
         return sig_mask
 
-    def forward(self, x: torch.Tensor, xn: Optional[torch.Tensor] = None, get_mask: bool = False) -> torch.Tensor:
+    def forward(
+        self, x: torch.Tensor, xn: Optional[torch.Tensor] = None, get_mask: bool = False
+    ) -> torch.Tensor:
         """
         Apply the proposed algorithm to the input signal.
 
